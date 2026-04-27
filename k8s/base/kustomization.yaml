@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: resilientops
+resources:
+  - namespace.yaml
+  - api-gateway.yaml
+  - service-a.yaml
+  - service-b.yaml
+  - redis.yaml
+  - prometheus-config.yaml
+  - prometheus-alert-rules.yaml
+  - prometheus.yaml
+  - alertmanager-config.yaml
+  - alertmanager.yaml
+  - alert-webhook.yaml
+  - grafana-datasource.yaml
+  - grafana-dashboard.yaml
+  - grafana.yaml
+  - elk-elasticsearch.yaml
+  - elk-logstash-config.yaml
+  - elk-logstash.yaml
+  - elk-kibana.yaml
+  - elk-filebeat.yaml
+  - hpa.yaml

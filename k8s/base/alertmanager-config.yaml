@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+  namespace: resilientops
+data:
+  alertmanager.yml: |
+    global:
+      resolve_timeout: 5m
+
+    route:
+      group_by: ["alertname", "severity"]
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 3h
+      receiver: "default"
+
+    receivers:
+      - name: "default"
+        webhook_configs:
+          - url: "http://alert-webhook.resilientops.svc.cluster.local:8081/alerts"
+            send_resolved: true

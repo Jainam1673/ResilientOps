@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  namespace: resilientops
+data:
+  resilientops-overview.json: |
+    {
+      "id": null,
+      "uid": "resilientops-overview",
+      "title": "ResilientOps Overview",
+      "schemaVersion": 38,
+      "version": 1,
+      "refresh": "10s",
+      "panels": [
+        {
+          "type": "timeseries",
+          "title": "Gateway Request Rate",
+          "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+          "targets": [{"expr": "sum(rate(gateway_requests_total[1m])) by (status)", "legendFormat": "{{status}}"}]
+        },
+        {
+          "type": "timeseries",
+          "title": "Gateway P95 Latency (s)",
+          "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+          "targets": [{"expr": "histogram_quantile(0.95, sum(rate(gateway_request_latency_seconds_bucket[5m])) by (le))"}]
+        },
+        {
+          "type": "timeseries",
+          "title": "Service Error Rates",
+          "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8},
+          "targets": [
+            {"expr": "sum(rate(service_a_errors_total[1m])) by (type)", "legendFormat": "service-a {{type}}"},
+            {"expr": "sum(rate(service_b_errors_total[1m])) by (type)", "legendFormat": "service-b {{type}}"},
+            {"expr": "sum(rate(gateway_errors_total[1m])) by (dependency)", "legendFormat": "gateway {{dependency}}"}
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Pods CPU (cores)",
+          "gridPos": {"x": 12, "y": 8, "w": 12, "h": 8},
+          "targets": [{"expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"resilientops\",container!=\"\"}[1m])) by (pod)", "legendFormat": "{{pod}}"}]
+        }
+      ],
+      "templating": {"list": []},
+      "time": {"from": "now-15m", "to": "now"},
+      "timezone": "browser"
+    }

@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-pipeline
+  namespace: resilientops
+data:
+  logstash.conf: |
+    input {
+      beats {
+        port => 5044
+      }
+    }
+
+    filter {
+      if [kubernetes] {
+        mutate {
+          add_field => { "service" => "%{[kubernetes][container][name]}" }
+        }
+      }
+    }
+
+    output {
+      elasticsearch {
+        hosts => ["http://elasticsearch.resilientops.svc.cluster.local:9200"]
+        index => "resilientops-logs-%{+YYYY.MM.dd}"
+      }
+      stdout { codec => rubydebug }
+    }

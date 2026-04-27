@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-alert-rules
+  namespace: resilientops
+data:
+  alerts.yml: |
+    groups:
+      - name: resilientops-service-alerts
+        rules:
+          - alert: GatewayHighErrorRate
+            expr: sum(rate(gateway_requests_total{status="error"}[2m])) / clamp_min(sum(rate(gateway_requests_total[2m])), 1) > 0.2
+            for: 2m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Gateway error ratio is above 20%"
+              description: "Gateway is returning errors above threshold for 2 minutes."
+
+          - alert: GatewayHighLatencyP95
+            expr: histogram_quantile(0.95, sum(rate(gateway_request_latency_seconds_bucket[5m])) by (le)) > 1.2
+            for: 3m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Gateway p95 latency is high"
+              description: "Gateway p95 latency exceeded 1.2s for 3 minutes."
+
+          - alert: ServiceAPodNotReady
+            expr: sum(up{job="service-a"} == 0) > 0
+            for: 2m
+            labels:
+              severity: critical
+            annotations:
+              summary: "A service-a pod is not ready"
+              description: "One or more service-a pods are unready in resilientops namespace."
+
+          - alert: HighContainerMemoryUsage
+            expr: max(container_memory_working_set_bytes{namespace="resilientops",container!="",pod=~"(api-gateway|service-a|service-b)-.*"}) / 1024 / 1024 > 350
+            for: 3m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Container memory usage is elevated"
+              description: "At least one resilientops app container exceeded 350Mi working set."
