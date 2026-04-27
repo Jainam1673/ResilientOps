@@ -2,6 +2,50 @@
 
 ResilientOps is a production-inspired SRE project that demonstrates how distributed systems behave under failure, how to observe those failures, and how to automate recovery.
 
+## Executive Summary
+
+This repository is intentionally structured as an SRE systems project, not an application feature demo.
+
+- Reliability-first design: failures are expected, injected, measured, and recovered.
+- Operational visibility: metrics, logs, and alerts are treated as first-class outputs.
+- Automation-first operations: repetitive incident response actions are scriptable and reproducible.
+- Heterogeneous services: Python and Go workloads are deployed and operated under one platform.
+
+If you are evaluating this project for systems depth, focus on the failure scenarios, recovery behavior, and observability artifacts rather than UI or business features.
+
+## Recruiter Quick Scan
+
+- Distributed architecture with API gateway plus multiple internal services.
+- Kubernetes health probes, restart behavior, and HPA-based scaling.
+- Prometheus, Grafana, Alertmanager, and ELK integrated into a single environment.
+- Fault injection for crash, latency, error, dependency, CPU, memory, and network failures.
+- Documented runbook and design document for incident-driven operations.
+
+Primary documents:
+
+- docs/design-document.md
+- docs/architecture.md
+- docs/failure-scenarios.md
+- docs/runbook.md
+
+## Reliability Evaluation Model
+
+This project is designed to be evaluated with SRE-oriented criteria:
+
+- Mean Time To Detect (MTTD): time to detect degradation from metrics/logs/alerts.
+- Mean Time To Recover (MTTR): time from detection to healthy steady state.
+- Availability under injected failure: percentage of successful user-facing requests during chaos tests.
+- Observability completeness: ability to explain incidents from telemetry without guesswork.
+- Automation coverage: degree to which diagnosis/recovery is script-driven versus manual.
+
+## What Makes This Serious Engineering Work
+
+- Every major component is containerized and deployable in a reproducible way.
+- Failure modes are explicit and operationally testable, not theoretical.
+- Recovery paths are codified in scripts, not hidden in ad hoc manual steps.
+- Documentation includes architecture intent, experiment methodology, and runbook operations.
+- Cross-service behavior is observable from both metrics and centralized logs.
+
 ## What This Project Demonstrates
 
 - Reliability engineering mindset, not only tool usage.
@@ -28,6 +72,22 @@ ResilientOps is a production-inspired SRE project that demonstrates how distribu
 - k8s/base: Full Kubernetes manifests (apps + observability + ELK)
 - scripts: Build, deploy, chaos, and recovery automation
 - docs: Architecture, runbook, and failure scenario analysis
+
+## Design Document
+
+- docs/design-document.md
+
+## 10-Minute Validation Protocol
+
+Use this sequence to quickly assess project quality and operational behavior:
+
+1. Deploy stack and verify healthy readiness endpoints.
+2. Open Grafana and observe baseline latency/error trends.
+3. Inject one failure (for example, service crash or latency).
+4. Observe detection in metrics and logs.
+5. Run recovery workflow and confirm return to healthy state.
+
+This mirrors a realistic on-call loop: baseline, incident, investigation, mitigation, verification.
 
 ## Architecture
 
